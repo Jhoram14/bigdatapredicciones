@@ -158,6 +158,17 @@ export default function STemp() {
         const etiquetas = matriz.map(item => item[0]);
         const datos = matriz.map(item => item[1]);
         const mej = matriz.map(item => item[menor]);
+
+        let asd = Mat;
+
+        const metodo = sessionStorage.getItem('metodo');
+        const alpha = sessionStorage.getItem('alpha');
+
+        const datosSuavizados = aplicarSuavizacionExponencial(asd, metodo, alpha);
+
+        // Crear un evento personalizado y enviar los datos actualizados
+        const evento = new CustomEvent('actualizarVariable', { detail: datosSuavizados });
+        document.dispatchEvent(evento);
     
         // Establecer los datos calculados en los estados correspondientes
         setTableData(matriz);
@@ -170,16 +181,7 @@ export default function STemp() {
 
       
       const handleSubmit = () => {
-        let asd = Mat;
-
-        const metodo = document.getElementById('metodo').value;
-        const alpha = document.getElementById('alpha').value;
-
-        const datosSuavizados = aplicarSuavizacionExponencial(asd, metodo, alpha);
-
-        // Crear un evento personalizado y enviar los datos actualizados
-        const evento = new CustomEvent('actualizarVariable', { detail: datosSuavizados });
-        document.dispatchEvent(evento);
+        
         
     };
 
@@ -266,13 +268,7 @@ console.log(sessionStorage.getItem('tabla'));
             </thead>
             <TablaBody2 PTMAC={PTMAC} />
           </table>
-          <div className="contSuavisar" > 
-          <a>Metod a suavisar: </a>
-            <input id="metodo" type="text"/>
-            <a>Escribe alpha: </a>
-            <input id="alpha" type="text"/>
-            <button className="boton" onClick={handleSubmit}>Agregar suavisado</button>
-          </div>
+          
           <div className="comGrafico">
             <h1>Gráfico</h1>
             <ChartComponent labels={chartLabels} data={chartData} mej={mej} />

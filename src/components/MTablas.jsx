@@ -46,8 +46,9 @@ export default function MTablas() {
             sessionStorage.setItem('tabla', tableName);
             sessionStorage.setItem('matriz', JSON.stringify(matrizFormateada));
             sessionStorage.setItem('pms', parseInt(document.getElementById('pms').value));
-
             sessionStorage.setItem('pmd', parseInt(document.getElementById('pmd').value));
+            sessionStorage.setItem('metodo', parseInt(document.getElementById('metodo').value));
+            sessionStorage.setItem('alpha', parseInt(document.getElementById('alpha').value));
             navigate("/STemp");
         }
     };
@@ -64,6 +65,12 @@ export default function MTablas() {
                     <a>PMD</a>
                     <input type="text" id="pmd" required></input>
                 </div>
+
+                <a>Metod a suavisar: </a>
+                <input id="metodo" type="text"/>
+                <a>Escribe alpha: </a>
+                <input id="alpha" type="text"/>
+                
             </div>
             {/* <div> */}
                 {/* <h1> --------- Selecciona una tabla de la base de datos apra continuar</h1> */}
