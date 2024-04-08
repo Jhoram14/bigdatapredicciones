@@ -2,6 +2,58 @@
   text-align: center;
 }
 
+.tablas{
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  
+}
+
+.titulo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tabla{
+  flex-basis: 200px;
+  margin: 0% 5%;
+  
+
+}
+
+table {
+  border: 1px solid #000;
+  border-collapse: separate;
+  /* border-spacing: 5px; */
+  width: 300px;
+  /* table-layout:inherit; */
+}
+.titulo{
+  display: flex;
+  justify-content: space-around;
+}
+
+table {
+  border-collapse: collapse;
+  width: 50%; /* Modificar el ancho de la tabla según sea necesario */
+  margin: 20px auto; /* Centrar la tabla en la página */
+  min-width: 300px;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 5px; /* Modificar el espacio interno de las celdas según sea necesario */
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+
+
+/* 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -35,4 +87,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */

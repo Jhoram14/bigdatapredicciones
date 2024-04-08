@@ -1,27 +1,19 @@
-import React from "react";
+import axios from "axios";
 
-export default function Login() {
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log('Datos del formulario:', formData);
-    };
-  return (
-    <>
-    <div>
-      <h2>Iniciar sesión</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Nombre de usuario:</label>
-          <input type="text" id="username" name="username" required/>
-        </div>
-        <div>
-          <label htmlFor="password">Contraseña:</label>
-          <input type="password" id="password" name="password" required/>
-        </div>
-        <button type="submit">Iniciar sesión</button>
-      </form>
-    </div>
-    </>
-  );
+function login(username, password) {
+    return axios.post("http://localhost:3000/user/login", {
+        username: username,
+        password: password
+    })
+    .then(function(res) {
+        console.log(res.data);
+        return res.data;
+    })
+    .catch(function(err) {
+        // console.log("pperro");
+        console.error("Error:", err);
+        throw err;
+    });
 }
 
+export default login;
