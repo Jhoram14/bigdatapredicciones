@@ -27,7 +27,10 @@ function Login(props) {
 
     return (
         <>
-            <div>
+            <div className="containerLogin">
+                <div>
+
+                
                 <h2>Iniciar sesión</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
@@ -38,9 +41,10 @@ function Login(props) {
                         <label htmlFor="password">Contraseña:</label>
                         <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                     </div>
-                    <button type="submit">Iniciar sesión</button>
+                    <button className="boton" type="submit">Iniciar sesión</button>
                 </form>
                 <p className="error-message">{errorMessage}</p>
+                </div>
             </div>
         </>
     );

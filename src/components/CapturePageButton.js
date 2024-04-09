@@ -29,20 +29,15 @@ const styles = StyleSheet.create({
   } 
 });
 
-const MyDocument = ({ PTMAC, Perr }) => (
+const MyDocument = ({ PTMAC, Perr, TableName }) => (
   <Document>
     <Page>
       <View>
-        <Text>Mi primer PDF en React</Text>
-        <View style={styles.table}>
-          <View style={styles.tableRow}>
-            {PTMAC.map((value, index) => (
-              <View style={styles.tableCol} key={index}>
-                <Text style={styles.tableCell}>{value}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
+        {/* <Text>La tabla que se analizo fue</Text> */}
+        {/* <Text>{TableName}</Text> */}
+        <Text> </Text>
+        <Text>Promedio de errores de la Serie</Text>
+        <Text> </Text>
         <View style={styles.table}>
           <View style={styles.tableRow}>
             {Perr.map((value, index) => (
@@ -52,6 +47,19 @@ const MyDocument = ({ PTMAC, Perr }) => (
             ))}
           </View>
         </View>
+        <Text> </Text>
+        <Text>Tabla de Predicciones Futuras</Text>
+        <Text> </Text>
+        <View style={styles.table}>
+          <View style={styles.tableRow}>
+            {PTMAC.map((value, index) => (
+              <View style={styles.tableCol} key={index}>
+                <Text style={styles.tableCell}>{value}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+        
       </View>
     </Page>
   </Document>

@@ -8,6 +8,7 @@ import TablaBody3 from './TablaBody3';
 // import PdfB from "./CapturePageButton";
 import PDFButton from "./CapturePageButton";
 import SendEmailButton from "./SendEmailButton";
+import { json } from "react-router-dom";
 
 
 
@@ -234,7 +235,9 @@ function aplicarSuavizacionExponencial(matriz, pronosticoElegido, alpha) {
     fill: false
   };
 }
+console.log(sessionStorage.getItem('tabla'));
 // const imageUrl = '';
+
       return (
         <div>
 
@@ -263,16 +266,19 @@ function aplicarSuavizacionExponencial(matriz, pronosticoElegido, alpha) {
             </thead>
             <TablaBody2 PTMAC={PTMAC} />
           </table>
-          <div> 
-          <a>Escribe el metodo que deceas suavisar</a>
+          <div className="contSuavisar" > 
+          <a>Metod a suavisar: </a>
             <input id="metodo" type="text"/>
-            <a>Escribe alpha</a>
+            <a>Escribe alpha: </a>
             <input id="alpha" type="text"/>
-            <button onClick={handleSubmit}>Agregar suavisado</button>
+            <button className="boton" onClick={handleSubmit}>Agregar suavisado</button>
           </div>
-          <h1>Gráfico</h1>
-          <ChartComponent labels={chartLabels} data={chartData} mej={mej} />
-          <PDFButton PTMAC={PTMAC} Perr={Perr} />
+          <div className="comGrafico">
+            <h1>Gráfico</h1>
+            <ChartComponent labels={chartLabels} data={chartData} mej={mej} />
+          </div>
+          
+          <PDFButton PTMAC={PTMAC} Perr={Perr} TableName={JSON.stringify(sessionStorage.getItem('tabla'))} />
           <SendEmailButton/>
         </div>
       );

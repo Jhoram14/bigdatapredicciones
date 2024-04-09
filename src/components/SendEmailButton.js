@@ -26,7 +26,7 @@ const SendEmailButton = () => {
   };
 
   return (
-    <button onClick={handleClick}>
+    <button className="boton" onClick={handleClick}>
       Enviar PDF por correo electrónico
     </button>
   );
