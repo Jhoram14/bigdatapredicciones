@@ -4,6 +4,11 @@ import Table from './Table';
 import ChartComponent from './Chart';
 import TablaBody2 from './TablaBody2';
 import TablaBody3 from './TablaBody3';
+// import { Page, Text, View, Document, PDFDownloadLink } from '@react-pdf/renderer';
+// import PdfB from "./CapturePageButton";
+import PDFButton from "./CapturePageButton";
+import SendEmailButton from "./SendEmailButton";
+
 
 
 export default function STemp() {
@@ -14,6 +19,8 @@ export default function STemp() {
       const [PTMAC, setPTMAC] = useState([]);
       const [Perr, setPerr] = useState([]);
       const [mej, setmej] = useState([]);
+      const [Mat, setMat] = useState([]);
+      
     
       useEffect(() => {
         let matriz = sessionStorage.getItem('matriz');
@@ -22,6 +29,7 @@ export default function STemp() {
         let pms = sessionStorage.getItem('pms');
         pms = parseInt(pms);
         matriz = JSON.parse(matriz);
+        setMat(matriz);
         console.log(matriz);
 
         // Lógica de cálculo de la matriz aquí
@@ -139,6 +147,9 @@ export default function STemp() {
       }else {
           menor = 8;
       }
+
+      
+
     
         // Otros cálculos de la matriz aquí...
     
@@ -155,7 +166,75 @@ export default function STemp() {
         setPerr(Perr);
         setmej(mej);
       }, []);
-    
+
+      
+      const handleSubmit = () => {
+        let asd = Mat;
+
+        const metodo = document.getElementById('metodo').value;
+        const alpha = document.getElementById('alpha').value;
+
+        const datosSuavizados = aplicarSuavizacionExponencial(asd, metodo, alpha);
+
+        // Crear un evento personalizado y enviar los datos actualizados
+        const evento = new CustomEvent('actualizarVariable', { detail: datosSuavizados });
+        document.dispatchEvent(evento);
+        
+    };
+
+
+    /*--------------------------Suavizacion exponencial-------------------------*/
+function suavizacionExponencial(datos, alpha) {
+  let suavizado = [];
+  suavizado[0] = datos[0]; // El primer valor no cambia
+
+  for (let i = 1; i < datos.length; i++) {
+      suavizado[i] = alpha * datos[i] + (1 - alpha) * suavizado[i - 1];
+  }
+
+  return suavizado;
+}
+
+function aplicarSuavizacionExponencial(matriz, pronosticoElegido, alpha) {
+  let pronostico;
+  let indiceError;
+
+  switch (pronosticoElegido) {
+      case 'Promedio Simple':
+          pronostico = matriz.map(item => item[2]);
+          indiceError = 2;
+          break;
+      case 'Promedio Móvil Simple':
+          pronostico = matriz.map(item => item[4]);
+          indiceError = 4;
+          break;
+      case 'Promedio Móvil Doble':
+          pronostico = matriz.map(item => item[6]);
+          indiceError = 6;
+          break;
+      case 'PTMAC':
+          pronostico = matriz.map(item => item[8]);
+          indiceError = 8;
+          break;
+      default:
+          console.log("Error: Pronóstico no reconocido");
+          return;
+  }
+  const pronosticoSuavizado = suavizacionExponencial(pronostico, alpha);
+
+  // Actualizar el pronóstico en la matriz con el suavizado
+  for (let i = 0; i < matriz.length; i++) {
+      matriz[i][indiceError] = pronosticoSuavizado[i];
+  }
+  return {
+    label: pronosticoElegido,
+    data: matriz.map(item => item[indiceError]),
+    borderColor: 'rgb(255, 0, 255)',
+    tension: 0.4,
+    fill: false
+  };
+}
+// const imageUrl = '';
       return (
         <div>
 
@@ -184,8 +263,17 @@ export default function STemp() {
             </thead>
             <TablaBody2 PTMAC={PTMAC} />
           </table>
+          <div> 
+          <a>Escribe el metodo que deceas suavisar</a>
+            <input id="metodo" type="text"/>
+            <a>Escribe alpha</a>
+            <input id="alpha" type="text"/>
+            <button onClick={handleSubmit}>Agregar suavisado</button>
+          </div>
           <h1>Gráfico</h1>
           <ChartComponent labels={chartLabels} data={chartData} mej={mej} />
+          <PDFButton PTMAC={PTMAC} Perr={Perr} />
+          <SendEmailButton/>
         </div>
       );
     }
