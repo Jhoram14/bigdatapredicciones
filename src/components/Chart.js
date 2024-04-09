@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useState } from 'react';
 import Chart from 'chart.js/auto';
-// import PDFButton from "./CapturePageButton";
+
 
 const ChartComponent = ({ labels, data, mej }) => {
   const chartRef = useRef(null);
