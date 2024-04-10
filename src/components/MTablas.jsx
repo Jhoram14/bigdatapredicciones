@@ -47,8 +47,8 @@ export default function MTablas() {
             sessionStorage.setItem('matriz', JSON.stringify(matrizFormateada));
             sessionStorage.setItem('pms', parseInt(document.getElementById('pms').value));
             sessionStorage.setItem('pmd', parseInt(document.getElementById('pmd').value));
-            sessionStorage.setItem('metodo', parseInt(document.getElementById('metodo').value));
-            sessionStorage.setItem('alpha', parseInt(document.getElementById('alpha').value));
+            sessionStorage.setItem('metodo', document.getElementById('metodo').value);
+            sessionStorage.setItem('alpha', parseFloat(document.getElementById('alpha').value));
             navigate("/STemp");
         }
     };

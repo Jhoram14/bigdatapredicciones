@@ -8,7 +8,7 @@ import TablaBody3 from './TablaBody3';
 // import PdfB from "./CapturePageButton";
 import PDFButton from "./CapturePageButton";
 import SendEmailButton from "./SendEmailButton";
-import { json } from "react-router-dom";
+// import { json } from "react-router-dom";
 
 
 
@@ -159,6 +159,7 @@ export default function STemp() {
         const datos = matriz.map(item => item[1]);
         const mej = matriz.map(item => item[menor]);
 
+        setMat( matriz);
         let asd = Mat;
 
         const metodo = sessionStorage.getItem('metodo');
@@ -171,20 +172,13 @@ export default function STemp() {
         document.dispatchEvent(evento);
     
         // Establecer los datos calculados en los estados correspondientes
-        setTableData(matriz);
+        // setTableData(matriz);
         setChartLabels(etiquetas);
         setChartData(datos);
         setPTMAC(PTMAC);
         setPerr(Perr);
         setmej(mej);
       }, []);
-
-      
-      const handleSubmit = () => {
-        
-        
-    };
-
 
     /*--------------------------Suavizacion exponencial-------------------------*/
 function suavizacionExponencial(datos, alpha) {
@@ -198,45 +192,58 @@ function suavizacionExponencial(datos, alpha) {
   return suavizado;
 }
 
+
 function aplicarSuavizacionExponencial(matriz, pronosticoElegido, alpha) {
   let pronostico;
   let indiceError;
 
   switch (pronosticoElegido) {
-      case 'Promedio Simple':
-          pronostico = matriz.map(item => item[2]);
-          indiceError = 2;
-          break;
-      case 'Promedio Móvil Simple':
-          pronostico = matriz.map(item => item[4]);
-          indiceError = 4;
-          break;
-      case 'Promedio Móvil Doble':
-          pronostico = matriz.map(item => item[6]);
-          indiceError = 6;
-          break;
-      case 'PTMAC':
-          pronostico = matriz.map(item => item[8]);
-          indiceError = 8;
-          break;
-      default:
-          console.log("Error: Pronóstico no reconocido");
-          return;
+    case 'Promedio Simple':
+      pronostico = matriz.map(item => item[2]);
+      indiceError = 2;
+      break;
+    case 'Promedio Móvil Simple':
+      pronostico = matriz.map(item => item[4]);
+      indiceError = 4;
+      break;
+    case 'Promedio Móvil Doble':
+      pronostico = matriz.map(item => item[6]);
+      indiceError = 6;
+      break;
+    case 'PTMAC':
+      pronostico = matriz.map(item => item[8]);
+      indiceError = 8;
+      break;
+    default:
+      console.log("Error: Pronóstico no reconocido");
+      return;
   }
+
   const pronosticoSuavizado = suavizacionExponencial(pronostico, alpha);
 
-  // Actualizar el pronóstico en la matriz con el suavizado
+  // Actualizar el pronóstico suavizado en la matriz
   for (let i = 0; i < matriz.length; i++) {
-      matriz[i][indiceError] = pronosticoSuavizado[i];
+    matriz[i][11] = parseFloat(pronosticoSuavizado[i].toFixed(2));
+
+    // Calcular el error absoluto del pronóstico suavizado
+    const errorAbsoluto = Math.abs(matriz[i][1] - pronosticoSuavizado[i]);
+    // Agregar el error absoluto en el índice 11 de la matriz
+    matriz[i][12] = parseFloat(errorAbsoluto.toFixed(2));
+    console.log(matriz[i][12]);
+    
   }
+  setTableData(matriz);
+
   return {
     label: pronosticoElegido,
-    data: matriz.map(item => item[indiceError]),
+    data: matriz.map(item => item[10]), // Cambiar a item[10]
     borderColor: 'rgb(255, 0, 255)',
     tension: 0.4,
     fill: false
   };
 }
+
+
 console.log(sessionStorage.getItem('tabla'));
 // const imageUrl = '';
 
@@ -279,4 +286,3 @@ console.log(sessionStorage.getItem('tabla'));
         </div>
       );
     }
-    

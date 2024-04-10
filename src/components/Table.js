@@ -15,6 +15,8 @@ const Table = ({ data }) => {
           <th className='a'>Error Absoluto</th>
           <th className='a'>PTMAC</th>
           <th className='a'>Error Absoluto</th>
+          <th className='a'>Suavización Exponencial</th>
+          <th className='a'>Error Absoluto</th>
         </tr>
       </thead>
       <tbody>
@@ -30,11 +32,13 @@ const Table = ({ data }) => {
             <td className='a'>{row[7]}</td>
             <td className='a'>{row[8]}</td>
             <td className='a'>{row[9]}</td>
+            <td className='a'>{row[11]}</td>
+            <td className='a'>{row[12]}</td>
           </tr>
         ))}
       </tbody>
     </table>
   );
-}
+};
 
 export default Table;
