@@ -13,7 +13,7 @@ const ChartComponent = ({ labels, data, mej }) => {
     const datosActualizados = event.detail;
     // Establecer los datos actualizados en el estado
     setSuave(datosActualizados);
-    console.log(datosActualizados);
+    // console.log(datosActualizados);
   });
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const ChartComponent = ({ labels, data, mej }) => {
     if (chartRef.current.chart) {
       chartRef.current.chart.destroy();
     }
-    console.log(data);
+    // console.log(data);
     
 
     // Crear un nuevo conjunto de datos
@@ -46,7 +46,7 @@ const ChartComponent = ({ labels, data, mej }) => {
 
     // Agregar Suave a la lista de datasets si hay datos
     if (Object.keys(Suave).length !== 0 && Suave.constructor === Object) {
-      console.log(Suave);
+      // console.log(Suave);
       datasets.push(Suave);
     }
 

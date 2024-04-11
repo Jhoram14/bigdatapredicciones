@@ -31,14 +31,14 @@ export default function STemp() {
         pms = parseInt(pms);
         matriz = JSON.parse(matriz);
         setMat(matriz);
-        console.log(matriz);
+        // console.log(matriz);
 
         // Lógica de cálculo de la matriz aquí
         let Perr = [];
         let c = matriz[0][1];
         let d = 1;
-        let c1=0, c2=0, c3=0, c4=0;
-        let sumerr1=0, sumerr2=0, sumerr3=0, sumerr4 = 0; 
+        let c1=0, c2=0, c3=0, c4=0, c5=0;
+        let sumerr1=0, sumerr2=0, sumerr3=0, sumerr4 = 0, sumerr5 = 0; 
     
         for (let i = 1; i < matriz.length; i++) {
           d++;
@@ -54,7 +54,7 @@ export default function STemp() {
     
         // Cálculo del Promedio Móvil Simple (PMS)
         let vrec = pms; // Valor de recurrencia
-        console.log(vrec);
+        // console.log(vrec);
         for (let i = 0; i < matriz.length - vrec; i++) {
           let c = 0;
           for (let j = 0; j < vrec; j++) {
@@ -71,7 +71,7 @@ export default function STemp() {
     
         //Promedio Movil Doble
       let vrecj = pmd; //valor recibido j 
-      console.log(vrecj);
+      // console.log(vrecj);
       let t = matriz.length - vrec;
     
       for (let i = 0; i < t; i++) {
@@ -135,23 +135,97 @@ export default function STemp() {
       PTMAC[1]= parseFloat(PTMAC[1]).toFixed(2)
       PTMAC[2]= parseFloat(PTMAC[2]).toFixed(2)
     
+
+    /*--------------------------Suavizacion exponencial-------------------------*/
+    function suavizacionExponencial(datos, alpha) {
+      let suavizado = [];
+      suavizado[0] = datos[0]; // El primer valor no cambia
+    
+      for (let i = 1; i < datos.length; i++) {
+          suavizado[i] = alpha * datos[i] + (1 - alpha) * suavizado[i - 1];
+      }
+    
+      return suavizado;
+    }
+    
+    
+    function aplicarSuavizacionExponencial(matriz, pronosticoElegido, alpha) {
+      let pronostico;
+      let indiceError;
+    
+      switch (pronosticoElegido) {
+        case 'Promedio Simple':
+          pronostico = matriz.map(item => item[2]);
+          for (let i = 0; i < pronostico.length; i++) if(pronostico[i] === undefined) pronostico[i] = 0;
+          indiceError = 2;
+          break;
+        case 'Promedio Móvil Simple':
+          pronostico = matriz.map(item => item[4]);
+          for (let i = 0; i < pronostico.length; i++) if(pronostico[i] === undefined) pronostico[i] = 0;
+          indiceError = 4;
+          break;
+        case 'Promedio Móvil Doble':
+          pronostico = matriz.map(item => item[6]);
+          for (let i = 0; i < pronostico.length; i++) if(pronostico[i] === undefined) pronostico[i] = 0;
+          indiceError = 6;
+          break;
+        case 'PTMAC':
+          pronostico = matriz.map(item => item[8]);
+          for (let i = 0; i < pronostico.length; i++) if(pronostico[i] === undefined) pronostico[i] = 0;
+          indiceError = 8;
+          break;
+        default:
+          console.log("Error: Pronóstico no reconocido");
+          return;
+      }
+    
+      const pronosticoSuavizado = suavizacionExponencial(pronostico, alpha);
+    
+      // Actualizar el pronóstico suavizado en la matriz
+      for (let i = 1; i < matriz.length; i++) {
+        matriz[i][11] = parseFloat(pronosticoSuavizado[i].toFixed(2));
+    
+        // Calcular el error absoluto del pronóstico suavizado
+        const errorAbs = Math.abs(matriz[i][1] - pronosticoSuavizado[i]);
+        matriz[i][12] = parseFloat(errorAbs.toFixed(2));
+        sumerr5+=errorAbs;
+        c5++;
+    
+      }
+      Perr.push(sumerr5/c5);
+    
+      setTableData(matriz);
+    
+      return {
+        label: pronosticoElegido,
+        data: matriz.map(item => item[11]), // Cambiar a item[10]
+        borderColor: 'rgb(255, 0, 255)',
+        tension: 0.4,
+        fill: false
+      };
+    }
+    
+
+
+
+
       //Obtener el mejor error
     
       let menor;
-    
-      if (Perr[0] < Perr[1] && Perr[0]<Perr[2] && Perr[0]<Perr[3]) {
-          menor = 2;
-      } else if(Perr[1] < Perr[0] && Perr[1]<Perr[2] && Perr[1]<Perr[3]) {
-          menor = 4;
-      } else if(Perr[2] < Perr[0] && Perr[2]<Perr[1] && Perr[2]<Perr[3]) {
-          menor = 6;
-      }else {
-          menor = 8;
-      }
 
-      
-
+      if (Perr[0] < Perr[1] && Perr[0] < Perr[2] && Perr[0] < Perr[3] && Perr[0] < Perr[4]) {
+        menor = 2;
+    } else if (Perr[1] < Perr[0] && Perr[1] < Perr[2] && Perr[1] < Perr[3] && Perr[1] < Perr[4]) {
+        menor = 4;
+    } else if (Perr[2] < Perr[0] && Perr[2] < Perr[1] && Perr[2] < Perr[3] && Perr[2] < Perr[4]) {
+        menor = 6;
+    } else if (Perr[3] < Perr[0] && Perr[3] < Perr[1] && Perr[3] < Perr[2] && Perr[3] < Perr[4]) {
+        menor = 8;
+    } else if (Perr[4] < Perr[0] && Perr[4] < Perr[1] && Perr[4] < Perr[2] && Perr[4] < Perr[3]) {
+        menor = 10;
+    } 
     
+
         // Otros cálculos de la matriz aquí...
     
         // Obtener etiquetas y datos para el gráfico
@@ -159,8 +233,8 @@ export default function STemp() {
         const datos = matriz.map(item => item[1]);
         const mej = matriz.map(item => item[menor]);
 
-        setMat( matriz);
-        let asd = Mat;
+        // setMat( matriz);
+        let asd = matriz;
 
         const metodo = sessionStorage.getItem('metodo');
         const alpha = sessionStorage.getItem('alpha');
@@ -180,71 +254,8 @@ export default function STemp() {
         setmej(mej);
       }, []);
 
-    /*--------------------------Suavizacion exponencial-------------------------*/
-function suavizacionExponencial(datos, alpha) {
-  let suavizado = [];
-  suavizado[0] = datos[0]; // El primer valor no cambia
 
-  for (let i = 1; i < datos.length; i++) {
-      suavizado[i] = alpha * datos[i] + (1 - alpha) * suavizado[i - 1];
-  }
-
-  return suavizado;
-}
-
-
-function aplicarSuavizacionExponencial(matriz, pronosticoElegido, alpha) {
-  let pronostico;
-  let indiceError;
-
-  switch (pronosticoElegido) {
-    case 'Promedio Simple':
-      pronostico = matriz.map(item => item[2]);
-      indiceError = 2;
-      break;
-    case 'Promedio Móvil Simple':
-      pronostico = matriz.map(item => item[4]);
-      indiceError = 4;
-      break;
-    case 'Promedio Móvil Doble':
-      pronostico = matriz.map(item => item[6]);
-      indiceError = 6;
-      break;
-    case 'PTMAC':
-      pronostico = matriz.map(item => item[8]);
-      indiceError = 8;
-      break;
-    default:
-      console.log("Error: Pronóstico no reconocido");
-      return;
-  }
-
-  const pronosticoSuavizado = suavizacionExponencial(pronostico, alpha);
-
-  // Actualizar el pronóstico suavizado en la matriz
-  for (let i = 0; i < matriz.length; i++) {
-    matriz[i][11] = parseFloat(pronosticoSuavizado[i].toFixed(2));
-
-    // Calcular el error absoluto del pronóstico suavizado
-    const errorAbsoluto = Math.abs(matriz[i][1] - pronosticoSuavizado[i]);
-    // Agregar el error absoluto en el índice 11 de la matriz
-    matriz[i][12] = parseFloat(errorAbsoluto.toFixed(2));
-    console.log(matriz[i][12]);
-    
-  }
-  setTableData(matriz);
-
-  return {
-    label: pronosticoElegido,
-    data: matriz.map(item => item[10]), // Cambiar a item[10]
-    borderColor: 'rgb(255, 0, 255)',
-    tension: 0.4,
-    fill: false
-  };
-}
-
-
-console.log(sessionStorage.getItem('tabla'));
+// console.log(sessionStorage.getItem('tabla'));
 // const imageUrl = '';
 
       return (
@@ -256,10 +267,12 @@ console.log(sessionStorage.getItem('tabla'));
           <table className='a'>
             <thead>
               <tr>
-                <th className='a'>Perr 1</th>
-                <th className='a'>Perr 2</th>
-                <th className='a'>Perr 3</th>
-                <th className='a'>Perr 4</th>
+                <th className='a'>Promedio De error PS</th>
+                <th className='a'>Promedio De error PMS</th>
+                <th className='a'>Promedio De error PMD</th>
+                <th className='a'>Promedio De error PTMAC</th>
+                <th className='a'>Promedio De error SE</th>
+
               </tr>
             </thead>
             <TablaBody3 Perr={Perr} />
@@ -268,9 +281,9 @@ console.log(sessionStorage.getItem('tabla'));
           <table className='a'>
             <thead>
               <tr>
-                <th className='a'>PTMAC 1</th>
-                <th className='a'>PTMAC 2</th>
-                <th className='a'>PTMAC 3</th>
+                <th className='a'>Primera Predicción</th>
+                <th className='a'>Segunda Predicción</th>
+                <th className='a'>Tercera Predicción</th>
               </tr>
             </thead>
             <TablaBody2 PTMAC={PTMAC} />
